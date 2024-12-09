@@ -8,9 +8,14 @@ export const api = axios.create({
 });
 
 // Endpoints
-export const getQuestions = async () => {
-  const response = await api.get("/questions");
-  return response.data;
+export const getQuestions = async (): Promise<any[]> => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/questions`);
+    return response.data || []; // Retorna um array vazio caso os dados sejam null ou undefined
+  } catch (error) {
+    console.error("Erro ao buscar as perguntas:", error);
+    return []; // Retorna um array vazio em caso de erro
+  }
 };
 
 export const getQuestionById = async (uuid: string) => {
