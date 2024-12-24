@@ -8,6 +8,16 @@ export const api = axios.create({
 });
 
 // Endpoints
+export const getCategories = async (): Promise<any[]> => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/categories`);
+    return response.data || []; // Retorna um array vazio caso os dados sejam null ou undefined
+  } catch (error) {
+    console.error("Erro ao buscar as categories:", error);
+    return []; // Retorna um array vazio em caso de erro
+  }
+};
+
 export const getQuestions = async (): Promise<any[]> => {
   try {
     const response = await axios.get(`${API_BASE_URL}/questions`);

@@ -1,7 +1,22 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { getCategories } from "../services/api";
 
 const Home: React.FC = () => {
+  // Alteração: agora armazenamos um array de objetos com _id e name.
+  const [categories, setCategories] = useState<{ _id: string, name: string }[]>([]);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const fetchedCategories = await getCategories();
+        setCategories(fetchedCategories);
+      } catch (error) {
+        console.error("Erro ao carregar categorias:", error);
+      }
+    })();
+  }, []);
+
   return (
     <div className="home">
       <div className="intro-box">
@@ -15,13 +30,13 @@ const Home: React.FC = () => {
       </div>
 
       <div className="level-boxes">
-        {["A1", "A2", "B1", "B2", "C1", "C2"].map((level) => (
-          <div className="level-box" key={level}>
+        {/* Alteração: agora mapeamos diretamente sobre o array de objetos com _id e name */}
+        {categories.map((category) => (
+          <div className="level-box" key={category._id}>
             <div className="level-text">
-              <h2 className="level-name">{level}</h2>
-              <span>Level</span>
+              <h2 className="level-name">{category.name}</h2>
             </div>
-            <Link className="level-link" to={`/quiz/${level}`}>
+            <Link className="level-link" to={`/quiz/${category.name}`}>
               <span>Start Quiz</span> <i className="bi bi-arrow-right"></i>
             </Link>
           </div>

@@ -1,90 +1,64 @@
-import React, { createContext, useContext, useState, ReactNode } from "react";
+import React, { createContext, useContext, useState, ReactNode, useEffect } from "react";
+import { getQuestions } from "../services/api";
 
 // Definindo os tipos para a estrutura das perguntas e respostas
-interface Answer {
-  answer: string;
-  trueAnswer: boolean;
+
+
+interface Option {
+  option_text: string;
+  is_correct: boolean;
 }
 
 interface Question {
-  id: number;
-  question: string;
-  answers: Answer[];
+  description: string;
+  explanation: string;
+  difficulty: string;
+  categories: string[];
+  allow_multiple: boolean;
+  options: Option[];
 }
 
 interface QuizContextType {
-  questions: Record<string, Question[]>;
+  questions: Question[];
   currentQuestion: number;
-  setCurrentQuestion: React.Dispatch<React.SetStateAction<number>>;
+  setCurrentQuestion: (index: number) => void;
 }
 
-// Criando o contexto com o tipo definido
+// Criando o contexto
 const QuizContext = createContext<QuizContextType | undefined>(undefined);
 
-// Definindo os tipos para o Provider
 interface ProviderProps {
   children: ReactNode;
 }
 
-function Provider({ children }: ProviderProps) {
-  const [currentQuestion, setCurrentQuestion] = useState<number>(0);
+export const QuizProvider = ({ children }: ProviderProps) => {
+  const [questions, setQuestions] = useState<Question[]>([]);
+  const [currentQuestion, setCurrentQuestion] = useState(0);
 
-  const questions: Record<string, Question[]> = {
-    A1: [
-      {
-        id: 1,
-        question: "What does 'happy' mean?",
-        answers: [
-          { answer: "Üzgün", trueAnswer: false },
-          { answer: "Sinirli", trueAnswer: false },
-          { answer: "Mutlu", trueAnswer: true },
-          { answer: "Sıkıcı", trueAnswer: false },
-        ],
-      },
-      {
-        id: 2,
-        question: "What does 'book' mean?",
-        answers: [
-          { answer: "Telefon", trueAnswer: false },
-          { answer: "Anahtar", trueAnswer: false },
-          { answer: "Kitap", trueAnswer: true },
-          { answer: "Kalem", trueAnswer: false },
-        ],
-      },
-      {
-        id: 3,
-        question: "What does 'hot' mean?",
-        answers: [
-          { answer: "Soğuk", trueAnswer: false },
-          { answer: "Sıcak", trueAnswer: true },
-          { answer: "Nemli", trueAnswer: false },
-          { answer: "Kuru", trueAnswer: false },
-        ],
-      },
-    ],
-  };
-
-  const sharedValuesAndMethods = {
-    questions,
-    currentQuestion,
-    setCurrentQuestion,
-  };
+  // Busca perguntas ao carregar o contexto
+  useEffect(() => {
+    (async () => {
+      try {
+        const fetchedQuestions = await getQuestions();
+        setQuestions(fetchedQuestions);
+      } catch (error) {
+        console.error("Erro ao carregar perguntas:", error);
+      }
+    })();
+  }, []);
 
   return (
-    <QuizContext.Provider value={sharedValuesAndMethods}>
+    <QuizContext.Provider value={{ questions, currentQuestion, setCurrentQuestion }}>
       {children}
     </QuizContext.Provider>
   );
-}
+};
 
-// Hook para acessar o contexto
-const useQuizContext = (): QuizContextType => {
+// Hook personalizado para usar o contexto
+export const useQuizContext = () => {
   const context = useContext(QuizContext);
   if (!context) {
-    throw new Error("useQuizContext must be used within a Provider");
+    throw new Error("useQuizContext deve ser usado dentro do QuizProvider");
   }
   return context;
 };
-
-export { Provider, useQuizContext };
-export default QuizContext;
