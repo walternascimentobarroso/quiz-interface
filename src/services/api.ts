@@ -1,5 +1,6 @@
 import axios from "axios";
-import { Question } from "../types/question";
+
+import { Categories, Questions } from "../types/question";
 
 const API_BASE_URL = "http://localhost:8000";
 
@@ -7,24 +8,23 @@ export const api = axios.create({
   baseURL: API_BASE_URL,
 });
 
-// Endpoints
-export const getCategories = async (): Promise<any[]> => {
+export const getCategories = async (): Promise<Categories[]> => {
   try {
     const response = await axios.get(`${API_BASE_URL}/categories`);
-    return response.data || []; // Retorna um array vazio caso os dados sejam null ou undefined
+    return response.data || [];
   } catch (error) {
     console.error("Erro ao buscar as categories:", error);
-    return []; // Retorna um array vazio em caso de erro
+    return [];
   }
 };
 
-export const getQuestions = async (): Promise<any[]> => {
+export const getQuestions = async (): Promise<Questions[]> => {
   try {
     const response = await axios.get(`${API_BASE_URL}/questions`);
-    return response.data || []; // Retorna um array vazio caso os dados sejam null ou undefined
+    return response.data || [];
   } catch (error) {
     console.error("Erro ao buscar as perguntas:", error);
-    return []; // Retorna um array vazio em caso de erro
+    return [];
   }
 };
 
@@ -33,14 +33,14 @@ export const getQuestionById = async (uuid: string) => {
   return response.data;
 };
 
-export const createQuestion = async (data: Omit<Question, "uuid">) => {
+export const createQuestion = async (data: Omit<Questions, "uuid">) => {
   const response = await api.post("/questions", data);
   return response.data;
 };
 
 export const updateQuestion = async (
   uuid: string,
-  data: Omit<Question, "uuid">
+  data: Omit<Questions, "uuid">
 ) => {
   const response = await api.put(`/questions/${uuid}`, data);
   return response.data;

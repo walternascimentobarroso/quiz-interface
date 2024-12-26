@@ -1,15 +1,20 @@
 import React from "react";
-import ReactDOM from "react-dom/client";
-import "./assets/css/style.css";
-import "./assets/css/result.css";
-import "./assets/css/home.css";
-import "./assets/css/quiz.css";
-import App from "./App";
+
 import { BrowserRouter } from "react-router-dom";
+
+import ReactDOM from "react-dom/client";
+
+import App from "./App";
 import { QuizProvider } from "./context/QuizContext";
 
-// Definindo o tipo de root como HTMLDivElement
-const root = ReactDOM.createRoot(document.getElementById("root") as HTMLDivElement);
+import "./assets/css/home.css";
+import "./assets/css/quiz.css";
+import "./assets/css/style.css";
+import "./assets/css/result.css";
+
+const root = ReactDOM.createRoot(
+  document.getElementById("root") as HTMLDivElement
+);
 
 root.render(
   <BrowserRouter>

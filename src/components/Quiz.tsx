@@ -1,29 +1,16 @@
-import React, { useState, useEffect } from "react";
-import { useQuizContext } from "../context/QuizContext";
+import React, { useEffect, useState } from "react";
+
 import { useNavigate } from "react-router-dom";
 
-interface Option {
-  option_text: string;
-  is_correct: boolean;
-}
-
-interface Question {
-  description: string;
-  explanation: string;
-  difficulty: string;
-  categories: string[];
-  allow_multiple: boolean;
-  options: Option[];
-}
-
-interface QuizContextType {
-  questions: Question[];
-  currentQuestion: number;
-  setCurrentQuestion: (index: number) => void;
-}
+import Timer from "./Timer";
+import AnswerLabel from "./AnswerLabel";
+import { useTimer } from "../hooks/useTimer";
+import { useQuizContext } from "../context/QuizContext";
+import { Option, QuizContextType } from "../types/question";
 
 const Quiz: React.FC = () => {
-  const { questions, currentQuestion, setCurrentQuestion } = useQuizContext() as QuizContextType;
+  const { questions, currentQuestion, setCurrentQuestion } =
+    useQuizContext() as QuizContextType;
   const navigate = useNavigate();
 
   const [isNextButton, setIsNextButton] = useState<boolean>(false);
@@ -31,7 +18,11 @@ const Quiz: React.FC = () => {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
   const [selectedAnswers, setSelectedAnswers] = useState<Option[]>([]);
-  const [time, setTime] = useState<number>(30);
+  const { time, resetTimer } = useTimer({
+    initialTime: 30,
+    onTimeEnd: () => nextQuestion(null),
+  });
+
   const [isErrorMessage, setIsErrorMessage] = useState<boolean>(false);
   const [isResult, setIsResult] = useState<boolean>(false);
 
@@ -52,7 +43,7 @@ const Quiz: React.FC = () => {
       setIsResult(true);
       setCurrentQuestion(0);
     } else {
-      setTime(30);
+      resetTimer();
       setIsNextButton(false);
       setCurrentQuestion(currentQuestion + 1);
       setSelectedIndex(null);
@@ -61,34 +52,14 @@ const Quiz: React.FC = () => {
 
   const addAnswer = (index: number | null) => {
     const currentQuestionData = questions[currentQuestion];
-    const selectedAnswer = currentQuestionData?.question.options[index as number];
+    const selectedAnswer =
+      currentQuestionData?.question.options[index as number];
 
     const newAnswers = [...selectedAnswers, selectedAnswer];
     setSelectedAnswers(newAnswers);
   };
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setTime(time - 1);
-    }, 1000);
-
-    if (time <= 5) {
-      setIsErrorMessage(true);
-    } else {
-      setIsErrorMessage(false);
-    }
-
-    if (time < 0) {
-      nextQuestion(null);
-    }
-
-    return () => clearInterval(timer);
-  }, [time]);
-
-  // Ensure currentQuestionData is valid before accessing its properties
-  const currentQuestionData = questions[currentQuestion];
-  console.log(currentQuestionData);
-  // const options = currentQuestionData ? currentQuestionData.options : [];
+  useEffect(() => setIsErrorMessage(time <= 5), [time]);
 
   useEffect(() => {
     if (isResult) {
@@ -116,9 +87,13 @@ const Quiz: React.FC = () => {
         <div className="progress-bottom">
           <div
             className="progress-circle"
-            style={{
-              "--value": `${(currentQuestion + 1) / questions.length * 100}%`,
-            } as React.CSSProperties}
+            style={
+              {
+                "--value": `${
+                  ((currentQuestion + 1) / questions.length) * 100
+                }%`,
+              } as React.CSSProperties
+            }
           >
             <span className="progress-big">{currentQuestion + 1}</span>
             <span className="progress-mini">/{questions.length}</span>
@@ -131,36 +106,41 @@ const Quiz: React.FC = () => {
       </div>
 
       <div className="question-box">
-        {currentQuestionData && (
+        {questions[currentQuestion] && (
           <>
             <div className="question-text">
-              <h2 className="question-title">Question: {currentQuestion + 1}</h2>
-              <h3 className="question">{currentQuestionData?.question.description}</h3>
+              <h2 className="question-title">
+                Question: {currentQuestion + 1}
+              </h2>
+              <h3 className="question">
+                {questions[currentQuestion]?.question.description}
+              </h3>
             </div>
-            <div className="progress-circle time">
-              <span className="time">{time}</span>
-            </div>
+            <Timer time={time} />
           </>
         )}
       </div>
 
       <div className="answers-boxes">
-        {questions[currentQuestion]?.question.options?.map((answer, index) => (
-          <label
-            onClick={() => selectAnswer(index)}
-            key={index}
-            htmlFor={index.toString()}
-            className={selectedIndex === index ? "answer-label selected" : "answer-label"}
-          >
-            {answer.option_text}
-            <input type="radio" name="answer" id={index.toString()} />
-          </label>
-        ))}
+        {questions[currentQuestion]?.question.options?.map(
+          (answer: Option, index: number) => (
+            <AnswerLabel
+              key={index}
+              answer={answer}
+              index={index}
+              selectedIndex={selectedIndex}
+              selectAnswer={selectAnswer}
+            />
+          )
+        )}
       </div>
 
       {isNextButton && (
         <div className="next">
-          <button onClick={() => nextQuestion(selectedIndex)} className="next-btn">
+          <button
+            onClick={() => nextQuestion(selectedIndex)}
+            className="next-btn"
+          >
             Next Question
             <div className="icon">
               <i className="bi bi-arrow-right"></i>
@@ -171,7 +151,10 @@ const Quiz: React.FC = () => {
 
       {isResultButton && (
         <div className="next">
-          <button onClick={() => nextQuestion(selectedIndex)} className="next-btn result-btn">
+          <button
+            onClick={() => nextQuestion(selectedIndex)}
+            className="next-btn result-btn"
+          >
             See Results
             <div className="icon">
               <i className="bi bi-bar-chart"></i>

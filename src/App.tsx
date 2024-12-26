@@ -1,12 +1,12 @@
 import React from "react";
+
+import { Route, Routes } from "react-router-dom";
+
 import Home from "./components/Home";
 import Quiz from "./components/Quiz";
-import Result from "./components/Result";
 import Error from "./components/Error";
+import Result from "./components/Result";
 
-import { Routes, Route } from "react-router-dom";
-
-// Definindo o tipo da aplicação como componente funcional
 const App: React.FC = () => {
   return (
     <div className="app-container">
@@ -20,6 +20,6 @@ const App: React.FC = () => {
       </div>
     </div>
   );
-}
+};
 
 export default App;

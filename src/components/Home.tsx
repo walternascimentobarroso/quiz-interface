@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
+
 import { Link } from "react-router-dom";
+
+import { Categories } from "../types/question";
 import { getCategories } from "../services/api";
 
 const Home: React.FC = () => {
-  // Alteração: agora armazenamos um array de objetos com _id e name.
-  const [categories, setCategories] = useState<{ _id: string, name: string }[]>([]);
+  const [categories, setCategories] = useState<Categories[]>([]);
 
   useEffect(() => {
     (async () => {
