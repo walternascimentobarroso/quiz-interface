@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 
+import ReactMarkdown from "react-markdown";
 import { useNavigate, useParams } from "react-router-dom";
 
 import Timer from "./Timer";
@@ -119,9 +120,9 @@ const Quiz: React.FC = () => {
               <h2 className="question-title">
                 Question: {currentQuestion + 1}
               </h2>
-              <h3 className="question">
-                {questions[currentQuestion]?.question.description}
-              </h3>
+              <ReactMarkdown>
+                {questions[currentQuestion]?.question.description || ""}
+              </ReactMarkdown>
             </div>
             <Timer time={time} />
           </>

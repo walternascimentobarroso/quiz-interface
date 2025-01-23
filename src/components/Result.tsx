@@ -1,3 +1,4 @@
+import ReactMarkdown from "react-markdown";
 import { Link, useLocation } from "react-router-dom";
 
 import Image from "../assets/bg.png";
@@ -45,9 +46,9 @@ function Result() {
               <div className="check-answer-top">
                 <div className="check-texts">
                   <p className="check-answer-count">Question: {key + 1}</p>
-                  <h3 className="check-answer-question">
-                    {item?.question?.description}
-                  </h3>
+                  <ReactMarkdown className="check-answer-question">
+                    {item?.question?.description || ""}
+                  </ReactMarkdown>
                 </div>
                 <div className="check-icon">
                   <i className={isCorrect ? "bi bi-check" : "bi bi-x"}></i>
@@ -70,9 +71,9 @@ function Result() {
                 </div>
                 <div className="answer-box">
                   <span className="answer-title">Explanation</span>
-                  <span className="answer-text">
-                    {item?.question?.explanation}
-                  </span>
+                  <ReactMarkdown className="answer-text">
+                    {item?.question?.explanation || ""}
+                  </ReactMarkdown>
                 </div>
               </div>
             </div>
