@@ -1,28 +1,38 @@
 import { createContext, useContext, useEffect, useState } from "react";
 
-import { getQuestions } from "../services/api";
-import { Questions, QuizContextType, ProviderProps } from "../types/question";
+import { getQuestionsByCategory } from "../services/api";
+import { ProviderProps, Questions, QuizContextType } from "../types/question";
 
 const QuizContext = createContext<QuizContextType | undefined>(undefined);
 
 export const QuizProvider = ({ children }: ProviderProps) => {
   const [questions, setQuestions] = useState<Questions[]>([]);
   const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [category, setCategory] = useState<string>(""); // Categoria dinâmica
+
+  const fetchQuestions = async (selectedCategory: string) => {
+    try {
+      const fetchedQuestions = await getQuestionsByCategory(selectedCategory);
+      setQuestions(fetchedQuestions);
+    } catch (error) {
+      console.error("Erro ao carregar perguntas:", error);
+    }
+  };
 
   useEffect(() => {
-    (async () => {
-      try {
-        const fetchedQuestions = await getQuestions();
-        setQuestions(fetchedQuestions);
-      } catch (error) {
-        console.error("Erro ao carregar perguntas:", error);
-      }
-    })();
-  }, []);
+    if (category) {
+      fetchQuestions(category);
+    }
+  }, [category]);
 
   return (
     <QuizContext.Provider
-      value={{ questions, currentQuestion, setCurrentQuestion }}
+      value={{
+        questions,
+        currentQuestion,
+        setCurrentQuestion,
+        setCategory,
+      }}
     >
       {children}
     </QuizContext.Provider>

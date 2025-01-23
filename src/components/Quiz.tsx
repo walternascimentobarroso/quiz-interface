@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import Timer from "./Timer";
 import AnswerLabel from "./AnswerLabel";
@@ -9,7 +9,8 @@ import { useQuizContext } from "../context/QuizContext";
 import { Option, QuizContextType } from "../types/question";
 
 const Quiz: React.FC = () => {
-  const { questions, currentQuestion, setCurrentQuestion } =
+  const { category } = useParams();
+  const { setCategory, questions, currentQuestion, setCurrentQuestion } =
     useQuizContext() as QuizContextType;
   const navigate = useNavigate();
 
@@ -25,6 +26,12 @@ const Quiz: React.FC = () => {
 
   const [isErrorMessage, setIsErrorMessage] = useState<boolean>(false);
   const [isResult, setIsResult] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (category) {
+      setCategory(category);
+    }
+  }, [category, setCategory]);
 
   const selectAnswer = (index: number) => {
     if (currentQuestion >= questions.length - 1) {

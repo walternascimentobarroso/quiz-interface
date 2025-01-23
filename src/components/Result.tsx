@@ -8,7 +8,7 @@ function Result() {
   const allAnswers = location.state.answers;
   const allQuestions: Questions[] = location.state.questions;
   const percentile = allAnswers.filter(
-    (item: Option) => item.is_correct
+    (item: Option) => item?.is_correct
   ).length;
 
   return (
@@ -57,7 +57,7 @@ function Result() {
                 <div className="answer-box">
                   <span className="answer-title">Your Answer</span>
                   <span className="answer-text">
-                    {allAnswers[key].option_text}
+                    {allAnswers[key]?.option_text}
                   </span>
                 </div>
                 <div className="answer-box">

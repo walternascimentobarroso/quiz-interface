@@ -28,6 +28,7 @@ export interface QuizContextType {
   questions: Questions[];
   currentQuestion: number;
   setCurrentQuestion: (index: number) => void;
+  setCategory: (category: string) => void;
 }
 
 export interface TimerProps {

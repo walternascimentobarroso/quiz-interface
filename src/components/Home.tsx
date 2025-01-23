@@ -23,8 +23,8 @@ const Home: React.FC = () => {
     <div className="home">
       <div className="intro-box">
         <div className="intro-texts">
-          <h1 className="intro-title">English Vocabulary Quizzes</h1>
-          <p className="intro-description">Choose the quiz you want to solve</p>
+          <h1 className="intro-title">Solve Quizzes</h1>
+          <p className="intro-description">Practice, study, or prepare for your next challenge</p>
         </div>
         <div className="intro-icon">
           <i className="bi bi-question-circle"></i>

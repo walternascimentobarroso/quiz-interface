@@ -2,7 +2,8 @@ import axios from "axios";
 
 import { Categories, Questions } from "../types/question";
 
-const API_BASE_URL = "http://localhost:8000";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+console.log(import.meta.env.VITE_API_BASE_URL);
 
 export const api = axios.create({
   baseURL: API_BASE_URL,
@@ -21,6 +22,26 @@ export const getCategories = async (): Promise<Categories[]> => {
 export const getQuestions = async (): Promise<Questions[]> => {
   try {
     const response = await axios.get(`${API_BASE_URL}/questions`);
+    return response.data || [];
+  } catch (error) {
+    console.error("Erro ao buscar as perguntas:", error);
+    return [];
+  }
+};
+
+export const getQuestionsByCategory = async (
+  category: string,
+  random: boolean = false,
+  limit: number = 10
+): Promise<Questions[]> => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/questions`, {
+      params: {
+        category,
+        random,
+        limit,
+      },
+    });
     return response.data || [];
   } catch (error) {
     console.error("Erro ao buscar as perguntas:", error);

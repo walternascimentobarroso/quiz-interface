@@ -13,7 +13,7 @@ const App: React.FC = () => {
       <div className="quiz-box">
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/quiz/:level" element={<Quiz />} />
+          <Route path="/quiz/:category" element={<Quiz />} />
           <Route path="/result" element={<Result />} />
           <Route path="*" element={<Error />} />
         </Routes>
