@@ -20,7 +20,7 @@ const AnswerLabel: React.FC<AnswerLabel> = React.memo(
         }
       >
         {answer.option_text}
-        <input type="radio" name="answer" id={index.toString()} />
+        <input type="radio" className="invisible" name="answer" id={index.toString()} />
       </label>
     );
   }

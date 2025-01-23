@@ -7,6 +7,7 @@ import ReactDOM from "react-dom/client";
 import App from "./App";
 import { QuizProvider } from "./context/QuizContext";
 
+import "./index.css";
 import "./assets/css/home.css";
 import "./assets/css/quiz.css";
 import "./assets/css/style.css";
