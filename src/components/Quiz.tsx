@@ -4,7 +4,10 @@ import ReactMarkdown from "react-markdown";
 import { useNavigate, useParams } from "react-router-dom";
 
 import Timer from "./Timer";
+import Progress from "./Progress";
+import NextButton from "./NextButton";
 import AnswerLabel from "./AnswerLabel";
+import ErrorMessage from "./ErrorMessage";
 import { useTimer } from "../hooks/useTimer";
 import { useQuizContext } from "../context/QuizContext";
 import { Option, QuizContextType } from "../types/question";
@@ -82,36 +85,10 @@ const Quiz: React.FC = () => {
 
   return (
     <div>
-      <div className="progress-box">
-        <div className="progress-top">
-          <div className="progress-texts">
-            <h2 className="progress-title">Quiz Progress</h2>
-            <p className="progress-description">You are solving the quiz</p>
-          </div>
-          <div className="progress-icon">
-            <i className="bi bi-bar-chart"></i>
-          </div>
-        </div>
-        <div className="progress-bottom">
-          <div
-            className="progress-circle"
-            style={
-              {
-                "--value": `${
-                  ((currentQuestion + 1) / questions.length) * 100
-                }%`,
-              } as React.CSSProperties
-            }
-          >
-            <span className="progress-big">{currentQuestion + 1}</span>
-            <span className="progress-mini">/{questions.length}</span>
-          </div>
-          <p className="progress-detail">
-            You solve the {currentQuestion + 1}. question out of a total of{" "}
-            {questions.length} questions
-          </p>
-        </div>
-      </div>
+      <Progress
+        currentQuestion={currentQuestion}
+        totalQuestions={questions.length}
+      />
 
       <div className="question-box">
         {questions[currentQuestion] && (
@@ -144,41 +121,23 @@ const Quiz: React.FC = () => {
       </div>
 
       {isNextButton && (
-        <div className="next">
-          <button
-            onClick={() => nextQuestion(selectedIndex)}
-            className="next-btn"
-          >
-            Next Question
-            <div className="icon">
-              <i className="bi bi-arrow-right"></i>
-            </div>
-          </button>
-        </div>
+        <NextButton
+          label="Next Question"
+          icon="bi-arrow-right"
+          onClick={() => nextQuestion(selectedIndex)}
+        />
       )}
 
       {isResultButton && (
-        <div className="next">
-          <button
-            onClick={() => nextQuestion(selectedIndex)}
-            className="next-btn result-btn"
-          >
-            See Results
-            <div className="icon">
-              <i className="bi bi-bar-chart"></i>
-            </div>
-          </button>
-        </div>
+        <NextButton
+          label="See Results"
+          icon="bi-bar-chart"
+          onClick={() => nextQuestion(selectedIndex)}
+          extraClass="result-btn"
+        />
       )}
 
-      {isErrorMessage && (
-        <div className="message animation">
-          <div className="icon">
-            <i className="bi bi-exclamation-triangle"></i>
-          </div>
-          <span>You must hurry up!</span>
-        </div>
-      )}
+      {isErrorMessage && <ErrorMessage />}
     </div>
   );
 };

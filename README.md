@@ -48,3 +48,36 @@ export default tseslint.config({
   },
 })
 ```
+
+
+```json
+{
+    "description": "",
+    "explanation": "",
+    "difficulty": "",
+    "categories": [""],
+    "allow_multiple": false,
+    "options": [
+        {
+            "option_text": "",
+            "is_correct": true,
+            "explanation": ""
+        },
+        {
+            "option_text": "",
+            "is_correct": false,
+            "explanation": ""
+        },
+        {
+            "option_text": "",
+            "is_correct": false,
+            "explanation": ""
+        },
+        {
+            "option_text": "",
+            "is_correct": false,
+            "explanation": ""
+        }
+    ]
+}
+```
